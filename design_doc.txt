@@ -1,0 +1,88 @@
+Overview
+In this project I intend to develop a model to forecast the total infections of COVID-19
+in a mid-size American city.  The historical data for the model is obtained from the web.
+Object Oriented Programming (OOP) is based on creating objects that exhibit desired behavior or
+attributes. In this project I will design the model with OOP principles including encapsulation,
+modularity, inheritance and polymorphism.
+
+Basics of Epidemiology  
+Let us define c as the number of people which any single carrier of the Covid-19 infects in one day.
+The basic epidemiological model for total infection S on day n is given by log(S) = log((c/(c-1)) + n log(c)
+Looking at the plot of the log of the histoical COVID count, we observe that log(c) as the slope of the curve. 
+Note that c is not necessarily a constant and generally varies as the dynamics of the disease in a community evolve. 
+
+Design of Objects
+
+Parent Object: InfectionModel
+
+The InfectionModel class has the following three attributes:
+1. Data (data)
+2. Transformation (tform)
+3. Regime (regime)
+4. Differencing (diff)
+
+
+InfectionModel Methods (Pseudocode)
+
+class InfectionModel:
+    def __init__(self,regime,tform,diff,data):
+        self.data = data
+        self.regime = regime
+        self.tform = tform
+        self.diff = diff
+
+    def transform(self):
+        return self.tform(self.data)
+
+    def regchange(self):
+        return self.data[self.regime:]
+
+    def difference(self):
+        diff_data = self.data
+        for i in range(self.diff):
+            diff_data = diff_data[x] - diff_data[x-1]
+        return(diff_data)
+
+
+Child Object: CovidModel
+
+The CovidModel class interacts with the InfectionModel class in the following ways: it takes InfectionModel.transform() and returns the 
+ARIMA model that best fits the transformed data. 
+You can also test different models of your choosing and see which one fits InfectionModel.transform() the best.
+For this, the Model class allows you to get the AIC and sum of squared errors
+of your selected models, further helping you in determining which model fits the transformed data the best. 
+Lastly, the CovidModel class allows you to forecast future Total Infection using the best identified model.
+
+The CovidModel class will inherit all attributes of the parent InfectionModel class.
+The CovidModel class has the following additional attributes:
+1. Forecast of Number of Infections (forecast_num)
+2. Forecast horizon (T)
+3. Best model (best_model)
+
+
+CovidModel methods (Pseudocode)
+
+class CovidModel:
+    def __init__(self,tform):
+	self.tform = tform
+	
+    def estimate(self):
+    	return ARIMA_est(self.tform)
+
+    def model_obj(self,p,d,q):
+	return ARIMA(self.tform,p,d,q)
+
+    def error_model(self.tform):
+    	return AIC(self.tform,CovidModel.model_obj(self,p,d,q)),Sum_of_Sq(self.tform,CovidModel.model_obj(self,p,d,q))
+
+    def forecast(T):
+	best_model = CovidModel.model_obj(self,p,d,q)
+	forecast_num = best_model(T)
+	return(forecast_num)
+	
+	
+
+
+
+
+	
